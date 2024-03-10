@@ -7,9 +7,12 @@ import { TracksModule } from './tracks/tracks.module';
 import { AlbumsModule } from './albums/albums.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { DBModule } from './bd/bd.module';
+import { ConfigModule } from '@nestjs/config';
+import { environmentConfig } from '@app/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(environmentConfig),
     UsersModule,
     ArtistsModule,
     TracksModule,

@@ -20,7 +20,7 @@ npm install
 ## Running application
 
 ```
-npm start
+npm run start:dev or npm run start:local
 
 **Create .env and copy past content from .env.example file**
 ```
