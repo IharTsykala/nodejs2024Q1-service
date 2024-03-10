@@ -12,7 +12,6 @@ import {
   Put,
   ForbiddenException,
   HttpCode,
-  HttpStatus,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -20,6 +19,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 @Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -27,6 +27,8 @@ export class UsersController {
   @UsePipes(new ValidationPipe({ transform: true }))
   @UseInterceptors(ClassSerializerInterceptor)
   @Post()
+  @ApiOperation({ summary: 'Create User' })
+  @ApiResponse({ status: 200, type: CreateUserDto })
   create(@Body() createUserDto: CreateUserDto) {
     const { login, password } = createUserDto ?? {};
     return this.usersService.create(new CreateUserDto(login, password));
@@ -34,12 +36,16 @@ export class UsersController {
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
+  @ApiOperation({ summary: 'Get all users' })
+  @ApiResponse({ status: 200, type: [CreateUserDto] })
   findAll() {
     return this.usersService.findAll();
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
+  @ApiOperation({ summary: 'Get users by id' })
+  @ApiResponse({ status: 200, type: CreateUserDto })
   findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     const user = this.usersService.findOne(id);
     if (!user) {
@@ -51,6 +57,8 @@ export class UsersController {
   @UsePipes(new ValidationPipe({ transform: true }))
   @UseInterceptors(ClassSerializerInterceptor)
   @Put(':id')
+  @ApiOperation({ summary: 'Change user by id' })
+  @ApiResponse({ status: 200, type: CreateUserDto })
   update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateUserDto: UpdatePasswordDto,
@@ -68,6 +76,8 @@ export class UsersController {
 
   @HttpCode(204)
   @Delete(':id')
+  @ApiOperation({ summary: 'Remove user by id' })
+  @ApiResponse({ status: 204 })
   remove(@Param('id', new ParseUUIDPipe()) id: string) {
     const isRemoved = this.usersService.remove(id);
     if (!isRemoved) {
