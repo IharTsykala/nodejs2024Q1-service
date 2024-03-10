@@ -1,8 +1,14 @@
 import { Module } from '@nestjs/common';
-import { TracksService } from './tracks.service';
-import { TracksController } from './tracks.controller';
+
+//modules
 import { ArtistsModule } from '../artists/artists.module';
 import { AlbumsModule } from '../albums/albums.module';
+
+//service
+import { TracksService } from './tracks.service';
+
+//controller
+import { TracksController } from './tracks.controller';
 
 @Module({
   controllers: [TracksController],

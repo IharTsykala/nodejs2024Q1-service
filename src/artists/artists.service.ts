@@ -1,8 +1,14 @@
 import { Injectable } from '@nestjs/common';
+
+//entities
+import { Artist } from './entities/artist.entity';
+
+//dto
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
+
+//db
 import Database from '../bd';
-import { Artist } from './entities/artist.entity';
 
 @Injectable()
 export class ArtistsService {

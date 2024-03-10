@@ -12,11 +12,14 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+
+import { validate as uuidValidate } from 'uuid';
+
+//service
 import { FavoritesService } from './favorites.service';
 import { TracksService } from '../tracks/tracks.service';
 import { ArtistsService } from '../artists/artists.service';
 import { AlbumsService } from '../albums/albums.service';
-import { validate as uuidValidate } from 'uuid';
 
 @Controller('favs')
 export class FavoritesController {

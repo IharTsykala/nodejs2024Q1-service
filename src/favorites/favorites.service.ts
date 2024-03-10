@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+
+//bd
 import Database from '../bd';
 
 @Injectable()

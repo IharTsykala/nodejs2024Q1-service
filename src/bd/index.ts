@@ -1,18 +1,23 @@
+import { Injectable } from '@nestjs/common';
+
 import { v4 as uuidv4 } from 'uuid';
-import { CreateUserDto } from '../users/dto/create-user.dto';
+
+//entities
 import { User } from '../users/entities/user.entity';
-import { UpdatePasswordDto } from '../users/dto/update-user.dto';
 import { Artist } from '../artists/entities/artist.entity';
-import { CreateArtistDto } from '../artists/dto/create-artist.dto';
-import { UpdateArtistDto } from '../artists/dto/update-artist.dto';
 import { Album } from '../albums/entities/album.entity';
 import { Track } from '../tracks/entities/track.entity';
+import { Favorite } from '../favorites/entities/favorite.entity';
+
+//dto
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { UpdatePasswordDto } from '../users/dto/update-user.dto';
+import { CreateArtistDto } from '../artists/dto/create-artist.dto';
+import { UpdateArtistDto } from '../artists/dto/update-artist.dto';
 import { CreateAlbumDto } from '../albums/dto/create-album.dto';
 import { CreateTrackDto } from '../tracks/dto/create-track.dto';
 import { UpdateAlbumDto } from '../albums/dto/update-album.dto';
 import { UpdateTrackDto } from '../tracks/dto/update-track.dto';
-import { Favorite } from '../favorites/entities/favorite.entity';
-import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export default class Database {

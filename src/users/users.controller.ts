@@ -15,11 +15,18 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+
+//services
 import { UsersService } from './users.service';
+
+//entities
+import { User } from './entities/user.entity';
+
+//dto
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+
 @Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

@@ -15,13 +15,20 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+
+import { validate as uuidValidate } from 'uuid';
+
+//services
 import { TracksService } from './tracks.service';
-import { CreateTrackDto } from './dto/create-track.dto';
-import { UpdateTrackDto } from './dto/update-track.dto';
-import { Track } from './entities/track.entity';
 import { ArtistsService } from '../artists/artists.service';
 import { AlbumsService } from '../albums/albums.service';
-import { validate as uuidValidate } from 'uuid';
+
+//entities
+import { Track } from './entities/track.entity';
+
+//dto
+import { CreateTrackDto } from './dto/create-track.dto';
+import { UpdateTrackDto } from './dto/update-track.dto';
 
 @Controller('track')
 export class TracksController {
