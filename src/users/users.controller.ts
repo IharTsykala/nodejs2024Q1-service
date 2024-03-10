@@ -13,6 +13,8 @@ import {
   ForbiddenException,
   HttpCode,
   HttpStatus,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -22,6 +24,7 @@ import { User } from './entities/user.entity';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @UsePipes(new ValidationPipe({ transform: true }))
   @UseInterceptors(ClassSerializerInterceptor)
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -45,6 +48,7 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
+  @UsePipes(new ValidationPipe({ transform: true }))
   @UseInterceptors(ClassSerializerInterceptor)
   @Put(':id')
   update(
