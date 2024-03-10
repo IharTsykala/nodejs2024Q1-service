@@ -12,6 +12,8 @@ import {
   HttpCode,
   HttpException,
   HttpStatus,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
@@ -46,6 +48,7 @@ export class TracksController {
   }
 
   @Post()
+  @UsePipes(new ValidationPipe({ transform: true }))
   create(@Body() createTrackDto: CreateTrackDto) {
     const {
       name,
@@ -92,6 +95,7 @@ export class TracksController {
   }
 
   @Put(':id')
+  @UsePipes(new ValidationPipe({ transform: true }))
   update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateTrackDto: UpdateTrackDto,
