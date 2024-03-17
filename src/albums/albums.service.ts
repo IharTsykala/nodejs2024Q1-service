@@ -1,36 +1,43 @@
 import { Injectable } from '@nestjs/common';
-
-//entities
-import Database from '../bd';
-
-//entities
-import { Album } from './entities/album.entity';
-
-//dto
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
+import { Album } from './entities/album.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AlbumsService {
-  constructor(private storage: Database) {}
+  constructor(
+    @InjectRepository(Album)
+    private readonly storage: Repository<Album>,
+  ) {}
 
-  create(createAlbumDto: CreateAlbumDto) {
-    return this.storage.create('albums', createAlbumDto);
+  async create(createAlbumDto: CreateAlbumDto) {
+    const createdAlbum = await this.storage.create(createAlbumDto);
+
+    return await this.storage.save(createdAlbum);
   }
 
-  findAll() {
-    return this.storage.findAll('albums');
+  async findAll() {
+    return await this.storage.find();
   }
 
-  findOne(id: string) {
-    return this.storage.findOne('albums', id);
+  async findOne(id: string) {
+    return await this.storage.findOne({
+      where: { id },
+    });
   }
 
-  update(track: Album, updateTrackDto: UpdateAlbumDto) {
-    return this.storage.update(track, updateTrackDto);
+  async update(album: Album, updateAlbumDto: UpdateAlbumDto) {
+    const createdAlbum = await this.storage.create({
+      ...album,
+      ...updateAlbumDto,
+    });
+
+    return await this.storage.save(createdAlbum);
   }
 
-  remove(id: string) {
-    return this.storage.remove('albums', id);
+  async remove(id: string) {
+    return await this.storage.delete({ id });
   }
 }

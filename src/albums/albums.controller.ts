@@ -12,22 +12,13 @@ import {
   HttpCode,
   HttpException,
   HttpStatus,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
-
-import { validate as uuidValidate } from 'uuid';
-
-//services
 import { AlbumsService } from './albums.service';
-import { ArtistsService } from '../artists/artists.service';
-
-//entities
-import { Album } from './entities/album.entity';
-
-//dto
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
+import { Album } from './entities/album.entity';
+import { ArtistsService } from '../artists/artists.service';
+import { validate as uuidValidate } from 'uuid';
 
 @Controller('album')
 export class AlbumsController {
@@ -45,7 +36,6 @@ export class AlbumsController {
   }
 
   @Post()
-  @UsePipes(new ValidationPipe({ transform: true }))
   create(@Body() createAlbumDto: CreateAlbumDto) {
     const { name, year, artistId = null } = createAlbumDto ?? {};
 
@@ -66,8 +56,8 @@ export class AlbumsController {
   }
 
   @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    const album = this.albumsService.findOne(id);
+  async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    const album = await this.albumsService.findOne(id);
 
     if (!album) {
       throw new NotFoundException();
@@ -77,8 +67,7 @@ export class AlbumsController {
   }
 
   @Put(':id')
-  @UsePipes(new ValidationPipe({ transform: true }))
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
@@ -92,9 +81,9 @@ export class AlbumsController {
       }
     }
 
-    const album = this.findOne(id) as Album | undefined;
+    const album = (await this.findOne(id)) as Album | undefined;
 
-    const updatedAlbum = this.albumsService.update(album, updateAlbumDto);
+    const updatedAlbum = await this.albumsService.update(album, updateAlbumDto);
 
     if (!updatedAlbum) {
       throw new ForbiddenException();
@@ -105,10 +94,10 @@ export class AlbumsController {
 
   @HttpCode(204)
   @Delete(':id')
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    const isRemoved = this.albumsService.remove(id);
+  async remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    const album = (await this.findOne(id)) as Album | undefined;
 
-    if (!isRemoved) {
+    if (!album) {
       throw new NotFoundException();
     }
 
