@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 //modules
-import { DBModule } from './bd/bd.module';
 import { UsersModule } from './users/users.module';
 import { ArtistsModule } from './artists/artists.module';
 import { TracksModule } from './tracks/tracks.module';
@@ -16,7 +16,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 //configs
-import { environmentConfig } from '@app/config';
+import { environmentConfig, typeOrmAsyncConfig } from '@app/config';
 
 @Module({
   imports: [
@@ -26,7 +26,7 @@ import { environmentConfig } from '@app/config';
     TracksModule,
     AlbumsModule,
     FavoritesModule,
-    DBModule,
+    TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
   ],
   controllers: [AppController],
   providers: [AppService],
