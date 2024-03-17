@@ -12,23 +12,14 @@ import {
   HttpCode,
   HttpException,
   HttpStatus,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
-
-import { validate as uuidValidate } from 'uuid';
-
-//services
 import { TracksService } from './tracks.service';
-import { ArtistsService } from '../artists/artists.service';
-import { AlbumsService } from '../albums/albums.service';
-
-//entities
-import { Track } from './entities/track.entity';
-
-//dto
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
+import { Track } from './entities/track.entity';
+import { ArtistsService } from '../artists/artists.service';
+import { AlbumsService } from '../albums/albums.service';
+import { validate as uuidValidate } from 'uuid';
 
 @Controller('track')
 export class TracksController {
@@ -55,7 +46,6 @@ export class TracksController {
   }
 
   @Post()
-  @UsePipes(new ValidationPipe({ transform: true }))
   create(@Body() createTrackDto: CreateTrackDto) {
     const {
       name,
@@ -91,8 +81,8 @@ export class TracksController {
   }
 
   @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    const track = this.tracksService.findOne(id);
+  async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    const track = await this.tracksService.findOne(id);
 
     if (!track) {
       throw new NotFoundException();
@@ -102,12 +92,11 @@ export class TracksController {
   }
 
   @Put(':id')
-  @UsePipes(new ValidationPipe({ transform: true }))
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateTrackDto: UpdateTrackDto,
   ) {
-    const track = this.findOne(id) as Track | undefined;
+    const track = (await this.findOne(id)) as Track | undefined;
 
     const { artistId = null, albumId = null } = updateTrackDto ?? {};
 
@@ -138,10 +127,10 @@ export class TracksController {
 
   @HttpCode(204)
   @Delete(':id')
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    const isRemoved = this.tracksService.remove(id);
+  async remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    const track = (await this.findOne(id)) as Track | undefined;
 
-    if (!isRemoved) {
+    if (!track) {
       throw new NotFoundException();
     }
 

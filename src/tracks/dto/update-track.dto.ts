@@ -1,9 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
-
-import { IsNotEmpty, IsNumber, IsString, ValidateIf } from 'class-validator';
-
-//dto
 import { CreateTrackDto } from './create-track.dto';
+import { IsNotEmpty, IsNumber, IsString, ValidateIf } from 'class-validator';
 
 export class UpdateTrackDto extends PartialType(CreateTrackDto) {
   @IsNotEmpty()
