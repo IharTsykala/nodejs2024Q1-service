@@ -8,11 +8,11 @@ import { CreateUserDto } from './create-user.dto';
 export class UpdatePasswordDto extends PartialType(CreateUserDto) {
   @IsString()
   @IsNotEmpty()
-  readonly oldPassword: string; // previous password
+  readonly oldPassword: string;
 
   @IsString()
   @IsNotEmpty()
-  readonly newPassword: string; // new password
+  readonly newPassword: string;
 
   constructor(oldPassword, newPassword) {
     super();

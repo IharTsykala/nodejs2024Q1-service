@@ -9,6 +9,8 @@ import {
   HttpException,
   HttpCode,
   NotFoundException,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import { TracksService } from '../tracks/tracks.service';
@@ -60,6 +62,7 @@ export class FavoritesController {
   }
 
   @Post('/artist/:id')
+  @UsePipes(new ValidationPipe({ transform: true }))
   async createArtist(@Param('id', new ParseUUIDPipe()) id: string) {
     const artist = await this.findOneArtist(id);
 
@@ -88,6 +91,7 @@ export class FavoritesController {
   }
 
   @Post('/album/:id')
+  @UsePipes(new ValidationPipe({ transform: true }))
   async createAlbum(@Param('id', new ParseUUIDPipe()) id: string) {
     const album = await this.findOneAlbum(id);
 

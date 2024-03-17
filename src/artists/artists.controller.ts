@@ -10,6 +10,8 @@ import {
   Put,
   ForbiddenException,
   HttpCode,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
@@ -21,6 +23,7 @@ export class ArtistsController {
   constructor(private readonly artistsService: ArtistsService) {}
 
   @Post()
+  @UsePipes(new ValidationPipe({ transform: true }))
   create(@Body() createArtistDto: CreateArtistDto) {
     const { name, grammy } = createArtistDto ?? {};
 

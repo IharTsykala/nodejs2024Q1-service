@@ -12,6 +12,8 @@ import {
   HttpCode,
   HttpException,
   HttpStatus,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
@@ -36,6 +38,7 @@ export class AlbumsController {
   }
 
   @Post()
+  @UsePipes(new ValidationPipe({ transform: true }))
   create(@Body() createAlbumDto: CreateAlbumDto) {
     const { name, year, artistId = null } = createAlbumDto ?? {};
 
@@ -67,6 +70,7 @@ export class AlbumsController {
   }
 
   @Put(':id')
+  @UsePipes(new ValidationPipe({ transform: true }))
   async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,

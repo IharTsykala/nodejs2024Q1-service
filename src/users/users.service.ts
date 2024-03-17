@@ -19,6 +19,7 @@ export class UsersService {
   }
 
   async findAll() {
+    console.log('await this.storage.find()', await this.storage.find());
     return await this.storage.find();
   }
 
