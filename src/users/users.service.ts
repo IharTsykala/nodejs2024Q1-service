@@ -1,45 +1,52 @@
 import { Injectable } from '@nestjs/common';
-
-//entities
-import { User } from './entities/user.entity';
-
-//bd
-import Database from '../bd';
-
-//dto
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly storage: Database) {}
+  constructor(
+    @InjectRepository(User)
+    private readonly storage: Repository<User>,
+  ) {}
 
-  create(createUserDto: CreateUserDto) {
-    return this.storage.create('users', createUserDto);
+  async create(createUserDto: CreateUserDto) {
+    const createdUser = await this.storage.create(createUserDto);
+
+    return this.storage.save(createdUser);
   }
 
-  findAll() {
-    return this.storage.findAll('users');
+  async findAll() {
+    return await this.storage.find();
   }
 
-  findOne(id: string) {
-    return this.storage.findOne('users', id);
+  async findOne(id: string) {
+    return await this.storage.findOne({
+      where: { id },
+    });
   }
 
-  update(user: User, updatePasswordDto: UpdatePasswordDto) {
-    if (updatePasswordDto.oldPassword !== user.password) {
+  async update(user: User, updatePasswordDto: UpdatePasswordDto) {
+    const { oldPassword, newPassword } = updatePasswordDto;
+
+    if (oldPassword !== user.password) {
       return;
     }
 
-    const { oldPassword, newPassword } = updatePasswordDto;
+    user.version++;
+    user.updatedAt = Math.floor(Date.now() / 1000);
 
-    return this.storage.update(
-      user,
-      new UpdatePasswordDto(oldPassword, newPassword),
-    );
+    const updatedUser = this.storage.create({
+      ...user,
+      password: newPassword,
+    });
+
+    return await this.storage.save(updatedUser);
   }
 
-  remove(id: string) {
-    return this.storage.remove('users', id);
+  async remove(user: User) {
+    return await this.storage.delete(user);
   }
 }

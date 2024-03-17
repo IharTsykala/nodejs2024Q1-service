@@ -9,16 +9,10 @@ import { UpdateArtistDto } from './dto/update-artist.dto';
 
 //db
 import Database from '../bd';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '@app/users/entities/user.entity';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class ArtistsService {
-  constructor(
-    @InjectRepository(User)
-    private readonly storage: Repository<User>,
-  ) {}
+  constructor(private storage: Database) {}
 
   create(createArtistDto: CreateArtistDto) {
     return this.storage.create('artists', createArtistDto);
