@@ -1,5 +1,17 @@
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { IsUUID } from 'class-validator';
+import { Exclude } from 'class-transformer';
+
+@Entity('Favorite')
 export class Favorite {
-  artists: string[]; // favorite artists ids
-  albums: string[]; // favorite albums ids
-  tracks: string[]; // favorite tracks ids
+  @IsUUID()
+  @PrimaryGeneratedColumn('uuid')
+  @Exclude()
+  id: number;
+
+  @Column()
+  entity: string;
+
+  @Column()
+  entityId: string;
 }

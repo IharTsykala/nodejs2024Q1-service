@@ -1,25 +1,63 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Favorite } from './entities/favorite.entity';
+import { Repository } from 'typeorm';
+import { ArtistsService } from '../artists/artists.service';
+import { AlbumsService } from '../albums/albums.service';
+import { TracksService } from '../tracks/tracks.service';
 
-//bd
-import Database from '../bd';
+const storages = {
+  tracks: 'tracksStorage',
+  albums: 'albumsStorage',
+  artists: 'artistsStorage',
+};
 
 @Injectable()
 export class FavoritesService {
-  constructor(private storage: Database) {}
+  constructor(
+    @Inject(forwardRef(() => ArtistsService))
+    private readonly artistsStorage: ArtistsService,
+    @Inject(forwardRef(() => AlbumsService))
+    private readonly albumsStorage: AlbumsService,
+    @Inject(forwardRef(() => TracksService))
+    private readonly tracksStorage: TracksService,
+    @InjectRepository(Favorite)
+    private readonly favoritesStorage: Repository<Favorite>,
+  ) {}
 
-  getAll() {
-    return this.storage.getAllFavorites();
+  async getAll() {
+    const favorites = { artists: [], albums: [], tracks: [] };
+    const allFavorites = await this.favoritesStorage.find();
+    for (const entityName in storages) {
+      favorites[entityName] = (
+        await Promise.all(
+          allFavorites
+            .filter(({ entity }) => entity === entityName)
+            .map(async ({ entityId, entity }) => {
+              return await this[storages[entity]].findOne(entityId);
+            }),
+        )
+      ).filter(Boolean);
+    }
+
+    return favorites;
   }
 
-  get(entity: string) {
-    return this.storage.getFavorites(entity);
+  async get(entity: string) {
+    const [favorites] = await this.favoritesStorage.find({
+      relations: {
+        [entity]: true,
+      },
+    });
+
+    return favorites;
   }
 
-  add(entity: string, id: string) {
-    return this.storage.addFavorites(entity, id);
+  async add(entity: string, id: string) {
+    return await this.favoritesStorage.save({ entityId: id, entity });
   }
 
-  remove(entity: string, id: string) {
-    return this.storage.removeFavorites(entity, id);
+  async remove(entity: string, id: string) {
+    return await this.favoritesStorage.delete({ entityId: id, entity });
   }
 }
