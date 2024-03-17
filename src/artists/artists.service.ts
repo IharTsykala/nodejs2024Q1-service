@@ -1,36 +1,43 @@
 import { Injectable } from '@nestjs/common';
-
-//entities
-import { Artist } from './entities/artist.entity';
-
-//dto
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-
-//db
-import Database from '../bd';
+import { Artist } from './entities/artist.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ArtistsService {
-  constructor(private storage: Database) {}
+  constructor(
+    @InjectRepository(Artist)
+    private readonly storage: Repository<Artist>,
+  ) {}
 
-  create(createArtistDto: CreateArtistDto) {
-    return this.storage.create('artists', createArtistDto);
+  async create(createArtistDto: CreateArtistDto) {
+    const createdArtist = this.storage.create(createArtistDto);
+
+    return this.storage.save(createdArtist);
   }
 
   findAll() {
-    return this.storage.findAll('artists');
+    return this.storage.find();
   }
 
-  findOne(id: string) {
-    return this.storage.findOne('artists', id);
+  async findOne(id: string) {
+    return await this.storage.findOne({
+      where: { id },
+    });
   }
 
-  update(artist: Artist, updateArtistDto: UpdateArtistDto) {
-    return this.storage.update(artist, updateArtistDto);
+  async update(artist: Artist, updateArtistDto: UpdateArtistDto) {
+    const createdArtist = await this.storage.create({
+      ...artist,
+      ...updateArtistDto,
+    });
+
+    return await this.storage.save(createdArtist);
   }
 
-  remove(id: string) {
-    return this.storage.remove('artists', id);
+  async remove(artist: Artist) {
+    return await this.storage.delete(artist);
   }
 }
