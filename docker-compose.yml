@@ -1,0 +1,70 @@
+version: "3.9"
+
+services:
+  my_db:
+    container_name: postgres_db
+    build:
+      context: .
+      dockerfile: ./database/Dockerfile
+    image: postgres:latest
+    volumes:
+      - my_db:/var/lib/postgresql/data/pgdata
+      - logs:/var/lib/postgresql/postgresql.log
+    env_file:
+      - .env
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    logging:
+      options:
+        max-size: 10m
+        max-file: "10"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: always
+    networks:
+      - my_network
+
+  my_app:
+    container_name: my_app
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: ihartsykala/nodejs2024q1-service-my_app
+    volumes:
+      - .:/app
+      - nodemodules:/app/node_modules
+    env_file:
+      - .env
+    ports:
+      - ${PORT}:${PORT}
+    command: npm run start:dev
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-my_db}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-root}
+      POSTGRES_DB: ${POSTGRES_DB:-rest_api}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_HOST: ${DB_HOST}
+    restart: always
+    depends_on:
+      - my_db
+    networks:
+      - my_network
+
+volumes:
+  my_db:
+  logs:
+  nodemodules:
+
+networks:
+  my_network:
+    name: my_network
+    driver: bridge
