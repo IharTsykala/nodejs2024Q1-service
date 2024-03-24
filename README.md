@@ -8,7 +8,7 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/IharTsykala/nodejs2024Q1-service
 ```
 
 ## Installing NPM modules
@@ -20,12 +20,35 @@ npm install
 ## Running application
 
 ```
-npm start
+npm run start:dev or npm run start:local
+
+**Create .env and copy past content from .env.example file**
 ```
 
 After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
+in your browser OpenAPI documentation by typing http://localhost:4000/docs/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
+
+## Migration
+
+```
+"db:drop": drop all tables,
+"typeorm:create": create migration without tables,
+"typeorm:generate": create migration with tables,
+"typeorm:run": execute migration,
+"typeorm:revert": remove last migration
+```
+
+## Running application across docker compose
+
+clear your docker:
+docker rm -f $(docker ps -aq) && \
+docker rmi -f $(docker images -aq) && \
+docker network prune -f && \
+docker volume prune -f
+
+and after execute script:
+npm run docker
 
 ## Testing
 
@@ -64,9 +87,3 @@ npm run lint
 ```
 npm run format
 ```
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
