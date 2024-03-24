@@ -11,7 +11,6 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
     "start:local": "nodemon",
     "start:dev": "nodemon",
     "start:debug": "nest start --debug --watch",
@@ -22,7 +21,13 @@
     "test:refresh": "cross-env TEST_MODE=auth jest --testPathPattern refresh.e2e.spec.ts --noStackTrace --runInBand",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "db:drop": "npm run typeorm schema:drop -- -d src/config/typeorm.config.ts",
+    "typeorm:create": "npm run typeorm migration:create -- migrations/node-service",
+    "typeorm:generate": "npm run typeorm migration:generate -- -d src/config/typeorm.config.ts migrations/node-service",
+    "typeorm:run": "npm run typeorm migration:run -- -d src/config/typeorm.config.ts",
+    "typeorm:revert": "npm run typeorm migration:revert -- -d src/config/typeorm.config.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.3",

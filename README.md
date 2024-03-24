@@ -29,6 +29,16 @@ After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/docs/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
+## Migration
+
+```
+"db:drop": drop all tables,
+"typeorm:create": create migration without tables,
+"typeorm:generate": create migration with tables,
+"typeorm:run": execute migration,
+"typeorm:revert": remove last migration
+```
+
 ## Running application across docker compose
 
 clear your docker:

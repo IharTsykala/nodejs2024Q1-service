@@ -1,3 +1,3 @@
 export { environmentConfig } from './common';
 
-export { typeOrmAsyncConfig } from './typeorm';
+export { typeOrmAsyncConfig } from './typeorm.config';
